@@ -1,0 +1,19 @@
+# Module list. `weight` is the relative exam weight used by the Daily mix.
+- { id: B1, code: B1, phase: 1, weight: 1.5, title: "Words, languages, regular expressions", refs: "Ch. 1 · Prop 1.10, 1.11", blurb: "Definitions, set traps, regular-expression semantics and equivalences." }
+- { id: B2, code: B2, phase: 1, weight: 1.5, title: "Finite automata", refs: "Ch. 2–3 · Prop 2.3, Thm 2.6, Prop 3.3–3.7", blurb: "DFA, NFA, ε-NFA; subset construction; RE ↔ automata." }
+- { id: B3, code: B3, phase: 1, weight: 1, title: "Minimisation and Myhill–Nerode", refs: "Ch. 4 · Thm 4.3, Lemma 4.5, 4.6", blurb: "∼L, equivalence classes, the marking algorithm." }
+- { id: B4, code: B4, phase: 1, weight: 1.2, title: "Closure properties and pumping", refs: "Ch. 5 · Thm 5.1–5.7", blurb: "Product automata, homomorphisms, the pumping lemma." }
+- { id: B5, code: B5, phase: 1, weight: 1, title: "Grammars and CNF", refs: "Thm 8.4, Lemmas 8.5–8.9, Thm 8.11, 8.13", blurb: "Derivations, useless variables, Chomsky normal form." }
+- { id: B6, code: B6, phase: 1, weight: 0.6, title: "Pushdown automata", refs: "Prop 9.5, Thm 9.6, Lemma 9.7, Thm 9.9, Prop 9.10", blurb: "Configurations, acceptance modes, deterministic PDAs." }
+- { id: B7, code: B7, phase: 1, weight: 1, title: "Context-free theory", refs: "Thm 10.1–10.7, 11.1–11.13", blurb: "Grammar ↔ PDA, pumping, closure, CYK." }
+- { id: B8, code: B8, phase: 1, weight: 1, title: "Models of computation", refs: "Prop 14.6, Thm 14.9–14.14, 15.6, 16.1–16.3", blurb: "LOOP, WHILE, GOTO, Turing machines." }
+- { id: B9, code: B9, phase: 1, weight: 1.2, title: "Decidability", refs: "Lemma 17.3–17.11, Thm 17.7–17.14, 18.1–18.3", blurb: "Semi-decidability, reductions, Rice, PCP." }
+- { id: B10, code: B10, phase: 1, weight: 1.5, title: "Complexity", refs: "Lemma 19.2–22.2, Thm 21.5–21.8, 22.10", blurb: "P, NP, polynomial reductions, Cook's theorem." }
+- { id: T1, code: T/F, phase: 1, weight: 1.2, title: "True or false, and why", refs: "All chapters", blurb: "Exam-style 2-point statements with justification." }
+- { id: A1, code: A1, phase: 2, weight: 2, title: "Reduction workshop", refs: "Prop 22.3–22.9 and new problems", blurb: "Build f, check it on instances, prove both directions." }
+- { id: A2, code: A2, phase: 2, weight: 1, title: "Undecidability proofs", refs: "Thm 17.9–17.14, 18.1–18.3", blurb: "Reductions from K, H, H₀, PCP; Rice." }
+- { id: A3, code: A3, phase: 2, weight: 1, title: "Rigorous proofs", refs: "Prop 1.10, 2.3, 11.3, Thm 4.3, 5.7, 11.1", blurb: "Induction, pumping adversary, Myhill–Nerode." }
+- { id: A4, code: A4, phase: 2, weight: 1, title: "Constructions for new operations", refs: "Thm 5.1–5.6, 11.10", blurb: "Define Q, δ, s, F for operations you haven't seen." }
+- { id: A5, code: A5, phase: 2, weight: 1, title: "Classification", refs: "Ch. 5, 11, 19", blurb: "Regular? Context-free? In P? Pick the tool and prove it." }
+- { id: A6, code: A6, phase: 2, weight: 0.8, title: "Turing machine analysis", refs: "Ch. 15–16", blurb: "Trace configurations, find the computed function." }
+- { id: A7, code: A7, phase: 2, weight: 1, title: "Mock exams", refs: "Whole course", blurb: "180 minutes, real structure, Part I / Part II rule." }

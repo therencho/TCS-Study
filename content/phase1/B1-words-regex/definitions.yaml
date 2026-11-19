@@ -1,0 +1,97 @@
+- id: B1-alphabet-def
+  module: B1
+  phase: 1
+  block: cloze
+  refs: ["Def 1.2"]
+  category: IV
+  difficulty: 1
+  prompt: Complete the definition of an alphabet.
+  template: "An alphabet Σ is a {1}, {2} set. An element of Σ is called a {3}."
+  answers:
+    - finite
+    - [nonempty, non-empty]
+    - symbol
+  explain: |
+    Both conditions matter: an alphabet is finite and nonempty. Its elements are symbols.
+    Words are finite sequences of symbols, so "word" is not the answer for the third blank.
+
+- id: B1-word-def
+  module: B1
+  phase: 1
+  block: cloze
+  refs: ["Def 1.3"]
+  difficulty: 1
+  prompt: Complete the definition of a word (string).
+  template: "A word w over Σ is a {1} sequence a₁⋯aₙ of symbols in Σ. Its length |w| is the {2} n of symbols. The empty word ε has length {3}."
+  answers:
+    - finite
+    - number
+    - ["0", zero]
+  explain: |
+    Words are always finite, even when a language contains infinitely many of them.
+    |ε| = 0, which is why ε is a word over every alphabet.
+
+- id: B1-star-def
+  module: B1
+  phase: 1
+  block: chip-cloze
+  refs: ["Def 1.10"]
+  difficulty: 2
+  prompt: Place the symbols to complete the definition of the Kleene star.
+  template: "L* = { w₁⋯wₙ | w₁, …, wₙ ∈ {1}, n ∈ {2} }"
+  chips: ["L", "Σ", "L*", "ℕ", "ℕ \\ {0}", "ℤ"]
+  answer: ["L", "ℕ"]
+  explain: |
+    n ranges over ℕ = {0, 1, 2, …}, so n = 0 is allowed: the empty concatenation is ε.
+    That is why ε ∈ L* for every language L, even L = ∅.
+
+- id: B1-concat-def
+  module: B1
+  phase: 1
+  block: chip-cloze
+  refs: ["Def 1.10"]
+  difficulty: 1
+  prompt: Complete the definition of the concatenation of two languages.
+  template: "L₁ · L₂ = { {1} | w₁ ∈ L₁, w₂ ∈ L₂ }"
+  chips: ["w₁w₂", "w₂w₁", "w₁ ∪ w₂", "(w₁, w₂)"]
+  answer: ["w₁w₂"]
+  explain: |
+    Concatenation of languages writes a word of L₁ followed by a word of L₂.
+    A pair (w₁, w₂) would be the Cartesian product, which is not a language of words.
+
+- id: B1-regex-syntax
+  module: B1
+  phase: 1
+  block: chip-cloze
+  refs: ["Def 1.12"]
+  difficulty: 2
+  prompt: Complete the inductive definition of regular expressions over Σ.
+  template: "Base: the symbols {1}, {2} and every a ∈ Σ are regular expressions. Step: if α and β are regular expressions, then so are (αβ), {3} and (α*)."
+  chips: ["∅", "ε", "(α + β)", "(α ∩ β)", "Σ*", "¬α"]
+  answer:
+    - ["∅", "ε"]
+    - ["ε", "∅"]
+    - "(α + β)"
+  explain: |
+    The base cases are ∅, ε and the single symbols. The three constructors are concatenation,
+    union (+) and star. Intersection and complement are not part of the syntax,
+    even though regular languages are closed under them (Thm 5.1).
+
+- id: B1-language-or-not
+  module: B1
+  phase: 1
+  block: buckets
+  refs: ["Def 1.5", "Ex 1.6"]
+  difficulty: 1
+  prompt: Which of these are languages over Σ = {0, 1, …, 9}?
+  buckets: ["A language", "Not a language"]
+  items:
+    - { text: "∅", bucket: "A language" }
+    - { text: "{ε}", bucket: "A language" }
+    - { text: "All decimal strings of even numbers", bucket: "A language" }
+    - { text: "{123, 91223}", bucket: "A language" }
+    - { text: "ℝ, the set of real numbers", bucket: "Not a language" }
+    - { text: "The full decimal expansion of π, as one string", bucket: "Not a language" }
+  explain: |
+    A language is any set of words. ∅ and {ε} are languages, and infinite sets of finite words are too.
+    ℝ is a set of numbers, not of words, and π's full expansion is infinite, so it is not a word at all.

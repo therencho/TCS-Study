@@ -1,0 +1,131 @@
+- id: B1-semantics-match
+  module: B1
+  phase: 1
+  block: match
+  refs: ["Def 1.14"]
+  difficulty: 1
+  prompt: Match each regular expression with its language.
+  pairs:
+    - { left: "L(∅)", right: "∅" }
+    - { left: "L(ε)", right: "{ε}" }
+    - { left: "L(αβ)", right: "L(α) · L(β)" }
+    - { left: "L(α + β)", right: "L(α) ∪ L(β)" }
+    - { left: "L(α*)", right: "(L(α))*" }
+  extra_right: ["L(α) ∩ L(β)", "{α}"]
+  explain: |
+    This is the inductive semantics: three base cases (∅, ε, single symbols) and one rule per constructor.
+    + means union, never intersection.
+
+- id: B1-empty-traps
+  module: B1
+  phase: 1
+  block: buckets
+  refs: ["Def 1.14", "Sec 1.6"]
+  exam_seen: ["Mar26-1a"]
+  difficulty: 2
+  prompt: Sort each language by what it equals.
+  buckets: ["∅", "{ε}", "something else"]
+  items:
+    - { text: "L(∅)", bucket: "∅" }
+    - { text: "L(∅*)", bucket: "{ε}" }
+    - { text: "∅ · {a}", bucket: "∅" }
+    - { text: "{ε} · {a}", bucket: "something else" }
+    - { text: "∅ ∪ {ε}", bucket: "{ε}" }
+    - { text: "L(ε*)", bucket: "{ε}" }
+    - { text: "∅ ∪ {a}", bucket: "something else" }
+    - { text: "{ε}*", bucket: "{ε}" }
+  explain: |
+    ∅ is the zero of concatenation (∅ · L = ∅) but the identity of union.
+    {ε} is the identity of concatenation, so {ε} · {a} = {a}.
+    The star of ∅ or of {ε} is {ε}: n = 0 always contributes ε.
+
+- id: B1-membership-words
+  module: B1
+  phase: 1
+  block: buckets
+  refs: ["Ex 1.15"]
+  difficulty: 2
+  prompt: "Which words are in L(a*b + ab*)?"
+  buckets: ["In the language", "Not in the language"]
+  items:
+    - { text: "ε", bucket: "Not in the language" }
+    - { text: "a", bucket: "In the language" }
+    - { text: "b", bucket: "In the language" }
+    - { text: "ab", bucket: "In the language" }
+    - { text: "ba", bucket: "Not in the language" }
+    - { text: "aab", bucket: "In the language" }
+    - { text: "abb", bucket: "In the language" }
+    - { text: "aabb", bucket: "Not in the language" }
+  explain: |
+    a*b gives some a's followed by exactly one b; ab* gives one a followed by some b's.
+    ε is in neither part, since every word of a*b ends in b and every word of ab* starts with a.
+    aabb has two a's and two b's, which neither part allows.
+
+- id: B1-membership-grid
+  module: B1
+  phase: 1
+  block: grid
+  refs: ["Def 1.14"]
+  difficulty: 2
+  prompt: Is the word (row) in the language of the expression (column)?
+  columns: ["(a+b)*", "a*b*", "(ab)*", "a + b*"]
+  rows: ["ε", "ab", "aa", "ba"]
+  options: ["✓", "✗"]
+  cells:
+    - ["✓", "✓", "✓", "✓"]
+    - ["✓", "✓", "✓", "✗"]
+    - ["✓", "✓", "✗", "✗"]
+    - ["✓", "✗", "✗", "✗"]
+  explain: |
+    a + b* is {a} ∪ L(b*), so it contains ε (from b*) but not ab.
+    a*b* needs all a's before all b's, so ba is not in it.
+    (ab)* only contains words made of blocks "ab", so aa is not in it.
+
+- id: B1-word-ops-grid
+  module: B1
+  phase: 1
+  block: grid
+  refs: ["Def 1.7", "Def 1.8"]
+  difficulty: 1
+  prompt: Compute the words. Type ε as "eps" if you can't type ε.
+  columns: ["u · v", "v · u", "u²", "u⁰"]
+  rows: ["u = ab, v = ba", "u = a, v = ε"]
+  cells:
+    - ["abba", "baab", "abab", { answer: ["ε", "eps", "epsilon"] }]
+    - ["a", "a", "aa", { answer: ["ε", "eps", "epsilon"] }]
+  explain: |
+    u⁰ = ε for every word u, by the definition of repetition.
+    ε is the identity of concatenation: u · ε = u = ε · u.
+
+- id: B1-precedence
+  module: B1
+  phase: 1
+  block: chip-cloze
+  refs: ["Ex 1.13"]
+  difficulty: 1
+  prompt: Which full bracketing does the expression mean?
+  template: "ab + cd*  ≡  {1}"
+  chips: ["((ab) + (c(d*)))", "((ab + c)d)*", "(a(b + c))(d*)", "((ab) + (cd))*"]
+  answer: ["((ab) + (c(d*)))"]
+  explain: |
+    Brackets bind strongest, then *, then concatenation, then +.
+    So the star only applies to d, and + splits the expression into ab and cd*.
+
+- id: B1-equivalences-match
+  module: B1
+  phase: 1
+  block: match
+  refs: ["Sec 1.6"]
+  difficulty: 2
+  prompt: Match each expression with an equivalent simpler one.
+  pairs:
+    - { left: "∅α", right: "∅" }
+    - { left: "εα", right: "α" }
+    - { left: "(α*)*", right: "α*" }
+    - { left: "ε*", right: "ε" }
+    - { left: "α(β + γ)", right: "αβ + αγ" }
+    - { left: "(α + β)γ", right: "αγ + βγ" }
+  extra_right: ["α + γ", "(αβ)*"]
+  explain: |
+    ∅ is the zero element of concatenation and ε its identity.
+    Concatenation distributes over + from both sides; the reverse (+ over concatenation) does not hold.

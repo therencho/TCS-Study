@@ -1,0 +1,148 @@
+- id: B1-prop110-order
+  module: B1
+  phase: 1
+  block: order
+  refs: ["Prop 1.10"]
+  category: I
+  difficulty: 2
+  prompt: "Build the proof of L(α(β + γ)) ⊆ L(αβ + αγ). Leave out the steps that don't belong."
+  steps:
+    - "Let w ∈ L(α(β + γ)) be arbitrary."
+    - "Then there are u ∈ L(α) and v ∈ L(β + γ) with w = uv."
+    - "So v ∈ L(β) or v ∈ L(γ); distinguish two cases."
+    - "Case v ∈ L(β): then w = uv ∈ L(αβ) ⊆ L(αβ + αγ)."
+    - "Case v ∈ L(γ): then w = uv ∈ L(αγ) ⊆ L(αβ + αγ)."
+    - "Hence L(α(β + γ)) ⊆ L(αβ + αγ). The other inclusion is shown analogously."
+  before: [[0, 1], [1, 2], [2, 3], [2, 4], [3, 5], [4, 5]]
+  distractors:
+    - "Choose α = a, β = b, γ = c and check the word ab."
+    - "Then w ∈ L(β) or w ∈ L(γ)."
+  explain: |
+    Equality of two languages is shown by two inclusions. For ⊆, take an arbitrary word and
+    split it along the outer concatenation. Only the second factor v is in L(β) or L(γ), not w itself.
+    Checking one example never proves a statement about all α, β, γ; examples only disprove.
+
+- id: B1-tf-card-eps
+  module: B1
+  phase: 1
+  block: tf
+  refs: ["Def 1.3"]
+  exam_seen: ["Mar26-1c"]
+  difficulty: 1
+  prompt: True or false? Then pick the justification.
+  statement: "|{ε}| = 0"
+  answer: false
+  reasons:
+    - { text: "{ε} has exactly one element, the empty word, so |{ε}| = 1.", correct: true }
+    - { text: "ε has length 0, so the set {ε} is empty." }
+    - { text: "{ε} = ∅, because both contain nothing." }
+  explain: |
+    Don't confuse the length of a word with the size of a set. |ε| = 0, but {ε} is a set with one element.
+    {ε} ≠ ∅: the first contains the empty word, the second contains nothing.
+
+- id: B1-tf-eps-in-empty
+  module: B1
+  phase: 1
+  block: tf
+  refs: ["Def 1.3", "Def 1.14"]
+  exam_seen: ["Aug26-1f"]
+  difficulty: 1
+  prompt: True or false? Then pick the justification.
+  statement: "ε ∈ {}"
+  answer: false
+  reasons:
+    - { text: "{} is the empty set; it has no elements at all, not even the empty word.", correct: true }
+    - { text: "ε is in every set, because it is the empty word." }
+    - { text: "It is true, because L(∅) contains ε." }
+  explain: |
+    {} = ∅ contains no element. ε is a word, and a word is in a set only if the set contains it.
+    L(∅) = ∅ also contains nothing; it is L(∅*) that equals {ε}.
+
+- id: B1-tf-card-aa
+  module: B1
+  phase: 1
+  block: tf
+  refs: ["Def 1.2"]
+  exam_seen: ["Aug26-1b"]
+  difficulty: 1
+  prompt: True or false? Then pick the justification.
+  statement: "|{a, a}| = 2"
+  answer: false
+  reasons:
+    - { text: "{a, a} = {a}: a set contains each element once, so its size is 1.", correct: true }
+    - { text: "It is 2, because the word aa has length 2." }
+    - { text: "It is 2, because two symbols are listed." }
+  explain: |
+    Listing an element twice doesn't change a set. Multisets (as in the Partition exercise) are different,
+    but plain sets are not multisets.
+
+- id: B1-tf-subset-star
+  module: B1
+  phase: 1
+  block: tf
+  refs: ["Def 1.14"]
+  exam_seen: ["Aug26-1c"]
+  difficulty: 2
+  prompt: True or false? Then pick the justification.
+  statement: "L(b*a*) ⊆ L(b* + a*)"
+  answer: false
+  reasons:
+    - { text: "ba ∈ L(b*a*) but ba ∉ L(b* + a*), since each word there uses only one letter.", correct: true }
+    - { text: "Every word of b*a* is a word of b* followed by one of a*, so it is in b* + a*." }
+    - { text: "L(b* + a*) contains ε, so it contains every word of b*a*." }
+  explain: |
+    To refute an inclusion, one counterexample word is enough: give it and say why it is in the left
+    language and not in the right one. + is union, not concatenation.
+
+- id: B1-tf-prop111
+  module: B1
+  phase: 1
+  block: tf
+  refs: ["Prop 1.11"]
+  category: I
+  exam_seen: ["Mar26-1c"]
+  difficulty: 2
+  prompt: True or false? Then pick the justification.
+  statement: "For all regular expressions α, β, γ: L(α + (β · γ)) = L((α + β) · (α + γ))."
+  answer: false
+  reasons:
+    - { text: "Take α = a, β = b, γ = c: aa ∈ L((a + b)(a + c)) but aa ∉ L(a + bc).", correct: true }
+    - { text: "Take α = a, β = b, γ = c: bc ∈ L(a + bc) but bc ∉ L((a + b)(a + c))." }
+    - { text: "It holds, because + distributes over concatenation like in Boolean algebra." }
+  explain: |
+    A claim "for all α, β, γ" is refuted by one concrete choice plus one word.
+    The second option is wrong: bc is in both languages (b from a + b, then c from a + c).
+
+- id: B1-tf-prop110
+  module: B1
+  phase: 1
+  block: tf
+  refs: ["Prop 1.10"]
+  category: I
+  difficulty: 2
+  prompt: True or false? Then pick the justification.
+  statement: "For all regular expressions α, β, γ: L(α(β + γ)) = L(αβ + αγ)."
+  answer: true
+  reasons:
+    - { text: "Each w = uv with u ∈ L(α) and v ∈ L(β) ∪ L(γ) lies in L(αβ) ∪ L(αγ), and vice versa.", correct: true }
+    - { text: "It holds because both expressions contain the same symbols." }
+    - { text: "It fails for α = a, β = b, γ = c, because ab ∉ L(ab + ac)." }
+  explain: |
+    Concatenation distributes over union. The proof shows both inclusions by splitting w = uv
+    and distinguishing whether v comes from β or from γ.
+
+- id: B1-tf-eps-in-star
+  module: B1
+  phase: 1
+  block: tf
+  refs: ["Def 1.10"]
+  difficulty: 1
+  prompt: True or false? Then pick the justification.
+  statement: "ε ∈ L* holds for every language L."
+  answer: true
+  reasons:
+    - { text: "In the definition of L*, n = 0 is allowed, and the empty concatenation is ε.", correct: true }
+    - { text: "Only if ε ∈ L; otherwise no word of L* can be empty." }
+    - { text: "It fails for L = ∅, since ∅* = ∅." }
+  explain: |
+    n ranges over ℕ, which includes 0. So even ∅* = {ε}.
