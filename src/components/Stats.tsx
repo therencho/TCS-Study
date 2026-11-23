@@ -3,13 +3,16 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { items, itemsOf } from "@/lib/content";
-import { loadProgress, today, type ProgressMap } from "@/lib/progress";
+import { loadProgress, PROGRESS_EVENT, today, type ProgressMap } from "@/lib/progress";
 import { counts, MIX_SIZE } from "@/lib/schedule";
 
 function useProgress() {
   const [p, setP] = useState<ProgressMap | null>(null);
   useEffect(() => {
-    loadProgress().then(setP);
+    const load = () => void loadProgress().then((x) => setP({ ...x }));
+    load();
+    window.addEventListener(PROGRESS_EVENT, load);
+    return () => window.removeEventListener(PROGRESS_EVENT, load);
   }, []);
   return p;
 }

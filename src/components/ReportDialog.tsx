@@ -1,14 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-export const REPORT_REASONS = [
-  "The answer key is wrong",
-  "The checker rejects a correct answer",
-  "The wording is unclear",
-  "Typo or formatting",
-  "Something else",
-] as const;
+import { REPORT_REASONS } from "@/lib/reportReasons";
 
 type State = "idle" | "sending" | "sent" | "unavailable" | "error";
 
@@ -47,7 +40,7 @@ export function ReportButton({ itemId }: { itemId: string }) {
         <p className="text-sm">Thanks, the report was sent. Fixes go live with the next update.</p>
       ) : state === "unavailable" ? (
         <p className="text-sm">
-          Reporting isn&apos;t connected yet. Please tell the maintainer the item id: <code className="font-mono">{itemId}</code>
+          Reporting isn&apos;t switched on yet. Please tell the maintainer the item id: <code className="font-mono">{itemId}</code>
         </p>
       ) : (
         <form

@@ -10,7 +10,11 @@ This is on-the-go practice, not a replacement for the notes, slides or exercise 
 - **Daily mix:** 10 items — due reviews first, then new items weighted by exam points.
 - **Modules:** practise one chapter at a time (Phase 1 · Basics; Phase 2 · Advanced follows).
 - **Mistakes:** redo the last items you got wrong.
-- **Your data:** progress lives in your browser. Export / import a backup to move it between devices.
+- **Sign in (optional):** progress syncs automatically to your account after each answer, so it follows
+  you between phone and laptop. Without signing in, progress stays on the device.
+- **Install it:** on Android/Chrome tap *Install*; on iPhone use Safari → Share → *Add to Home Screen*.
+  It opens like an app and works offline.
+- **Your data:** sync status, plus an optional backup file.
 - **Report a mistake** on any item if a key or explanation looks wrong.
 
 Spaced repetition uses 5 Leitner boxes (1, 2, 4, 8, 16 days). A wrong answer sends an item back to box 1
@@ -73,8 +77,25 @@ past exam questions are rewritten with changed languages, numbers and instances.
 
 ## Stack
 
-Next.js (App Router) · TypeScript · React · Tailwind CSS · KaTeX · IndexedDB (idb-keyval) · Vercel.
-Planned: Neon (Postgres) for mistake reports, answer statistics and optional sync; Clerk for optional sign-in.
+Next.js (App Router) · TypeScript · React · Tailwind CSS · KaTeX · IndexedDB (idb-keyval) · Vercel ·
+Neon (Postgres) · Clerk · installable PWA with a service worker (`public/sw.js`).
+
+## Accounts, sync and reports (optional)
+
+The app runs fully without these. Each part switches on when its environment variables exist:
+
+| Variable | Switches on | Where to get it |
+| --- | --- | --- |
+| `DATABASE_URL` | Mistake reports, sync storage, answer statistics | Vercel → Storage → Neon (sets it automatically) |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Sign-in and automatic sync | Vercel → Marketplace → Clerk, or the Clerk dashboard |
+
+- The schema (`db/schema.sql`) is applied automatically before every build when `DATABASE_URL` is set.
+- Sync is local-first: answers are saved on the device, queued, and sent to `/api/sync` after each answer,
+  on app start, when the device comes back online and when the app returns to the foreground.
+  For each item the most recent answer wins.
+- Useful queries in the Neon console:
+  - open reports: `SELECT * FROM reports WHERE status = 'open' ORDER BY created_at DESC;`
+  - hardest items: `SELECT * FROM item_stats WHERE attempts >= 5 ORDER BY wrong_rate DESC;`
 
 ## License
 

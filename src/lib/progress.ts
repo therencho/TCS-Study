@@ -20,6 +20,16 @@ export const INTERVAL: Record<Box, number> = { 1: 1, 2: 2, 3: 4, 4: 8, 5: 16 };
 const KEY = "tcs-progress-v1";
 const MISTAKES = "tcs-mistakes-v1";
 const META = "tcs-meta-v1";
+const PENDING = "tcs-pending-v1";
+
+/** Changes not yet sent to the server: item ids whose record changed, and first-try attempts. */
+export type Pending = { dirty: string[]; attempts: { itemId: string; correct: boolean; at: string }[] };
+
+/** Fired on window whenever local progress changes (answer, import, merge from the server). */
+export const PROGRESS_EVENT = "tcs-progress-changed";
+const notify = (reason: "answer" | "merge" | "import" | "reset") => {
+  if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(PROGRESS_EVENT, { detail: reason }));
+};
 
 export function today(d = new Date()): string {
   const y = d.getFullYear();
@@ -35,7 +45,7 @@ export function addDays(ymd: string, n: number): string {
 
 /** IndexedDB may be unavailable (private mode, blocked storage): fall back to memory. */
 let memory: { progress: ProgressMap; mistakes: Mistake[]; meta: Meta } | null = null;
-type Meta = { lastExport?: string; persistAsked?: boolean };
+type Meta = { lastExport?: string; persistAsked?: boolean; syncedUser?: string; lastSync?: string };
 
 async function safeGet<T>(key: string, fallback: T): Promise<T> {
   try {
@@ -62,6 +72,35 @@ export async function loadMistakes(): Promise<Mistake[]> {
 export async function loadMeta(): Promise<Meta> {
   return memory?.meta ?? safeGet<Meta>(META, {});
 }
+export async function saveMeta(patch: Partial<Meta>) {
+  const meta = { ...(await loadMeta()), ...patch };
+  if (memory) memory.meta = meta;
+  await safeSet(META, meta);
+}
+export async function loadPending(): Promise<Pending> {
+  return safeGet<Pending>(PENDING, { dirty: [], attempts: [] });
+}
+export async function savePending(p: Pending) {
+  await safeSet(PENDING, p);
+}
+
+/** Merge server records into local progress: for each item the most recent answer wins. */
+export async function mergeRemote(remote: ProgressMap): Promise<number> {
+  const local = await loadProgress();
+  let changed = 0;
+  for (const [id, r] of Object.entries(remote)) {
+    if (!local[id] || local[id].last < r.last) {
+      local[id] = r;
+      changed++;
+    }
+  }
+  if (changed) {
+    if (memory) memory.progress = local;
+    await safeSet(KEY, local);
+    notify("merge");
+  }
+  return changed;
+}
 
 export function nextRec(prev: Rec | undefined, correct: boolean, now = new Date()): Rec {
   const box: Box = !prev ? (correct ? 2 : 1) : correct ? (Math.min(prev.box + 1, 5) as Box) : 1;
@@ -86,6 +125,12 @@ export async function recordAnswer(id: string, correct: boolean): Promise<Progre
     if (memory) memory.mistakes = next;
     await safeSet(MISTAKES, next);
   }
+  const pending = await loadPending();
+  if (!pending.dirty.includes(id)) pending.dirty.push(id);
+  pending.attempts.push({ itemId: id, correct, at: progress[id].last });
+  if (pending.attempts.length > 2000) pending.attempts = pending.attempts.slice(-2000);
+  await savePending(pending);
+  notify("answer");
   return progress;
 }
 
@@ -149,6 +194,12 @@ export async function importBackup(b: Backup): Promise<number> {
     }
   }
   await safeSet(KEY, current);
+  if (changed) {
+    const pending = await loadPending();
+    pending.dirty = Array.from(new Set([...pending.dirty, ...Object.keys(b.progress)]));
+    await savePending(pending);
+    notify("import");
+  }
   const mistakes = [...(b.mistakes ?? []), ...(await loadMistakes())]
     .sort((a, z) => z.at.localeCompare(a.at))
     .filter((m, i, all) => all.findIndex((x) => x.id === m.id) === i)
@@ -161,8 +212,10 @@ export async function resetAll() {
   try {
     await del(KEY);
     await del(MISTAKES);
+    await del(PENDING);
   } catch {
     /* ignore */
   }
   if (memory) memory = { progress: {}, mistakes: [], meta: memory.meta };
+  notify("reset");
 }

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { itemsOf, modules } from "@/lib/content";
 import { DailyCard, ModuleProgress } from "@/components/Stats";
+import { SignInNudge } from "@/components/auth/AccountButton";
+import { authEnabledClient } from "@/lib/authConfig";
 
 export default function Home() {
   const phase1 = modules.filter((m) => m.phase === 1);
@@ -12,7 +14,10 @@ export default function Home() {
         with the slide reference and an explanation.
       </p>
 
-      <DailyCard />
+      <div className="space-y-3">
+        <DailyCard />
+        {authEnabledClient() && <SignInNudge />}
+      </div>
 
       <section>
         <h2 className="mb-1 font-serif text-xl">Phase 1 · Basics</h2>

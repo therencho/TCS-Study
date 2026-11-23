@@ -9,13 +9,14 @@ import {
   loadProgress,
   makeBackup,
   parseBackup,
+  PROGRESS_EVENT,
   resetAll,
   today,
   type ProgressMap,
 } from "@/lib/progress";
 import { counts } from "@/lib/schedule";
 
-export function DataPanel() {
+export function DataPanel({ auth = false }: { auth?: boolean }) {
   const [progress, setProgress] = useState<ProgressMap | null>(null);
   const [lastExport, setLastExport] = useState<string | undefined>();
   const [code, setCode] = useState("");
@@ -28,8 +29,13 @@ export function DataPanel() {
     setLastExport((await loadMeta()).lastExport);
   };
   useEffect(() => {
-    loadProgress().then(setProgress);
-    loadMeta().then((m) => setLastExport(m.lastExport));
+    const load = () => {
+      loadProgress().then((p) => setProgress({ ...p }));
+      loadMeta().then((m) => setLastExport(m.lastExport));
+    };
+    load();
+    window.addEventListener(PROGRESS_EVENT, load);
+    return () => window.removeEventListener(PROGRESS_EVENT, load);
   }, []);
 
   const c = progress ? counts(items, progress, today()) : null;
@@ -70,9 +76,9 @@ export function DataPanel() {
       </section>
 
       <section className="space-y-3 rounded-2xl border border-line bg-card p-5">
-        <h2 className="font-medium">Export</h2>
+        <h2 className="font-medium">Backup file <span className="font-normal text-muted">(optional)</span></h2>
         <p className="text-sm text-muted">
-          {lastExport ? `Last export: ${new Date(lastExport).toLocaleDateString()}` : "Not exported yet."}
+          {lastExport ? `Last export: ${new Date(lastExport).toLocaleDateString()}` : auth ? "Not exported yet. Only needed if you don't sign in." : "Not exported yet."}
         </p>
         <div className="flex flex-wrap gap-2">
           <button type="button" onClick={download} className="h-10 rounded-lg bg-ink px-4 text-sm font-medium text-paper">
@@ -104,7 +110,7 @@ export function DataPanel() {
       </section>
 
       <section className="space-y-3 rounded-2xl border border-line bg-card p-5">
-        <h2 className="font-medium">Import</h2>
+        <h2 className="font-medium">Restore a backup</h2>
         <p className="text-sm text-muted">
           Paste a code or choose a backup file. For each item, the more recent answer wins.
         </p>
@@ -144,7 +150,9 @@ export function DataPanel() {
 
       <section className="space-y-3 rounded-2xl border border-line p-5">
         <h2 className="font-medium">Start over</h2>
-        <p className="text-sm text-muted">Deletes all progress on this device. Export first if you want to keep it.</p>
+        <p className="text-sm text-muted">{auth
+            ? "Deletes all progress on this device. Progress already synced to your account comes back when you sign in."
+            : "Deletes all progress on this device. Export first if you want to keep it."}</p>
         {confirmReset ? (
           <div className="flex gap-2">
             <button
