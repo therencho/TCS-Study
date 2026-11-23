@@ -3,7 +3,7 @@
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { getSyncStatus, SYNC_EVENT, syncNow, type SyncStatus } from "@/lib/sync";
-import { SignInNudge } from "./AccountButton";
+import { SignInNudge, useClerkStuck } from "./AccountButton";
 
 export function useSyncStatus() {
   const [s, setS] = useState<SyncStatus>(getSyncStatus);
@@ -34,7 +34,14 @@ function label(s: SyncStatus): string {
 export function SyncPanel() {
   const { isLoaded, isSignedIn, userId } = useAuth();
   const s = useSyncStatus();
-  if (!isLoaded) return null;
+  const stuck = useClerkStuck();
+  if (!isLoaded)
+    return (
+      <section className="space-y-2 rounded-2xl border border-line bg-card p-5">
+        <h2 className="font-medium">Sync</h2>
+        {stuck ? <SignInNudge /> : <p className="text-sm text-muted">Connecting to sign-in…</p>}
+      </section>
+    );
   return (
     <section className="space-y-3 rounded-2xl border border-line bg-card p-5">
       <h2 className="font-medium">Sync</h2>

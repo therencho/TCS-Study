@@ -3,7 +3,7 @@
  * - hashed build assets, fonts, icons: cache first
  * - /api and other origins (Clerk): never cached
  */
-const VERSION = "tcs-study-v1";
+const VERSION = "tcs-study-v2";
 const PAGES = `${VERSION}-pages`;
 const ASSETS = `${VERSION}-assets`;
 const CORE = ["/", "/practice/daily", "/practice/extra", "/practice/mistakes", "/data"];
@@ -54,7 +54,7 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.startsWith("/api/")) return;
+  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/__clerk")) return;
   // React Server Component payloads for client navigation: let Next handle failures (it falls back to a full page load)
   if (req.headers.get("RSC") === "1" || url.searchParams.has("_rsc")) return;
 

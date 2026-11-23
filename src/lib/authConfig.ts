@@ -9,3 +9,6 @@ export const authEnabledClient = () => CLERK_PUBLISHABLE_KEY !== "";
 
 /** Server side: both keys are needed to verify sessions. */
 export const authEnabled = () => CLERK_PUBLISHABLE_KEY !== "" && Boolean(process.env.CLERK_SECRET_KEY);
+
+/** Optional: serve Clerk through our own domain (e.g. https://tcs.therencho.com/__clerk). */
+export const CLERK_PROXY_URL = process.env.NEXT_PUBLIC_CLERK_PROXY_URL ?? "";

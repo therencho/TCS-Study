@@ -1,11 +1,42 @@
 "use client";
 
-import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
+import { ClerkFailed, SignInButton, UserButton, useAuth } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
+
+/** True if Clerk hasn't loaded after a few seconds (blocked script, wrong domain for the keys, offline). */
+export function useClerkStuck(ms = 8000) {
+  const { isLoaded } = useAuth();
+  const [late, setLate] = useState(false);
+  useEffect(() => {
+    if (isLoaded) return;
+    const t = setTimeout(() => setLate(true), ms);
+    return () => clearTimeout(t);
+  }, [isLoaded, ms]);
+  return !isLoaded && late;
+}
+
+const UNAVAILABLE =
+  "Sign-in could not load. If this keeps happening, the Clerk keys may not match this website's domain.";
 
 /** Header control: "Sign in" (opens Clerk's modal) or the account menu. Only rendered when Clerk is configured. */
 export function AccountButton() {
   const { isLoaded, isSignedIn } = useAuth();
-  if (!isLoaded) return <span className="inline-block h-7 w-7" aria-hidden />;
+  const stuck = useClerkStuck();
+  if (!isLoaded)
+    return stuck ? (
+      <span title={UNAVAILABLE} className="text-xs text-bad">
+        Sign-in unavailable
+      </span>
+    ) : (
+      <>
+        <span className="inline-block h-7 w-7" aria-hidden />
+        <ClerkFailed>
+          <span title={UNAVAILABLE} className="text-xs text-bad">
+            Sign-in unavailable
+          </span>
+        </ClerkFailed>
+      </>
+    );
   if (isSignedIn) return <UserButton />;
   return (
     <SignInButton mode="modal">
@@ -19,6 +50,8 @@ export function AccountButton() {
 /** A one-line nudge for signed-out users. */
 export function SignInNudge() {
   const { isLoaded, isSignedIn } = useAuth();
+  const stuck = useClerkStuck();
+  if (stuck) return <p className="text-sm text-bad">{UNAVAILABLE} Progress is still saved on this device.</p>;
   if (!isLoaded || isSignedIn) return null;
   return (
     <p className="text-sm text-muted">
