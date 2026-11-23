@@ -6,7 +6,7 @@ import "@fontsource-variable/source-serif-4";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { authEnabledClient, CLERK_PROXY_URL } from "@/lib/authConfig";
+import { authEnabledClient } from "@/lib/authConfig";
 import { AccountButton } from "@/components/auth/AccountButton";
 import { SyncManager } from "@/components/auth/SyncManager";
 import { SyncDot } from "@/components/auth/SyncBadge";
@@ -51,7 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   );
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} h-full antialiased`}>
-      <body className="min-h-full">{auth ? <ClerkProvider {...(CLERK_PROXY_URL ? { proxyUrl: CLERK_PROXY_URL } : {})}>{page}</ClerkProvider> : page}</body>
+      <body className="min-h-full">{auth ? <ClerkProvider>{page}</ClerkProvider> : page}</body>
     </html>
   );
 }

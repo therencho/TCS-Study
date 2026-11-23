@@ -39,7 +39,7 @@ export function AccountButton() {
     );
   if (isSignedIn) return <UserButton />;
   return (
-    <SignInButton mode="modal">
+    <SignInButton mode="redirect">
       <button type="button" className="h-8 rounded-full border border-line px-3 text-sm text-ink">
         Sign in
       </button>
@@ -56,7 +56,7 @@ export function SignInNudge() {
   return (
     <p className="text-sm text-muted">
       Progress is saved on this device.{" "}
-      <SignInButton mode="modal">
+      <SignInButton mode="redirect">
         <button type="button" className="font-medium text-accent underline underline-offset-4">
           Sign in
         </button>

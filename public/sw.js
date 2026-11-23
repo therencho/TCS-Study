@@ -54,7 +54,7 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/__clerk")) return;
+  if (url.pathname.startsWith("/api/")) return;
   // React Server Component payloads for client navigation: let Next handle failures (it falls back to a full page load)
   if (req.headers.get("RSC") === "1" || url.searchParams.has("_rsc")) return;
 
